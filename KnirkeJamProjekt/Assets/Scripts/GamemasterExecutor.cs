@@ -6,8 +6,10 @@ public class GamemasterExecutor : MonoBehaviour
     public GameObject Canvas;
     public Text DisplayText;
     public GameObject playerObject;
-    private int i;
-    private float time;
+    private int a;
+    private int b;
+    private float time1;
+    private float time2;
 
     // Use this for initialization
     void Start ()
@@ -18,20 +20,29 @@ public class GamemasterExecutor : MonoBehaviour
 
         playerObject = GameObject.Find("Player");
 
-	    i = 0;
-	    time = 0;
+	    a = 0;
+	    time1 = 0;
 	}
 	
 	// Update is called once per frame
-	void Update ()
+    void Update()
     {
         //Fade on first input
         if (!GetComponent<GamestateManager>().fadeInDone)
             fadeHandler();
-        
+
         //Let the player do shit. Also introduce yourself
         if (GetComponent<GamestateManager>().fadeInDone)
-            {firstEvent(); playerObject.GetComponent<PlayerMovement>().enabled = true;}
+        {
+            if (playerObject != null && !playerObject.GetComponent<PlayerMovement>().enabled)
+                playerObject.GetComponent<PlayerMovement>().enabled = true;
+            firstEvent();
+        }
+
+        if (playerObject == null)
+        {
+            loseEvent();
+        }
     }
 
     void updateUIText(string text)
@@ -48,6 +59,26 @@ public class GamemasterExecutor : MonoBehaviour
             GetComponent<GamestateManager>().fadeInDone = true;
     }
 
+    void loseEvent()
+    {
+        string[] loseEventStrings ={
+            "Oh.",
+            "Couldn't take the pressure?",
+            "Ah well.",
+            "You can't escape your sins."};
+
+        if (b < loseEventStrings.Length - 1)
+            time2 += Time.deltaTime;
+
+        if (time2 >= 3f && b < loseEventStrings.Length - 1)
+        {
+            b++;
+            time2 = 0;
+        }
+
+        updateUIText(loseEventStrings[b]);
+    }
+
     void firstEvent()
     {
         string[] firstEventStrings ={
@@ -56,16 +87,16 @@ public class GamemasterExecutor : MonoBehaviour
             "You remember your purpose, of course.",
             "Go pick up that book."};
 
-        if (i < firstEventStrings.Length-1)
-            time += Time.deltaTime;
+        if (a < firstEventStrings.Length-1)
+            time1 += Time.deltaTime;
 
-        if (time >= 3f && i < firstEventStrings.Length-1)
+        if (time1 >= 3f && a < firstEventStrings.Length-1)
         {
-            i++;
-            time = 0;
+            a++;
+            time1 = 0;
         }
 
-        updateUIText(firstEventStrings[i]);
+        updateUIText(firstEventStrings[a]);
     }
 
 
