@@ -1,15 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GamestateManager : MonoBehaviour {
+public class GamestateManager : MonoBehaviour
+{
+    public bool fadeInDone = false;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
