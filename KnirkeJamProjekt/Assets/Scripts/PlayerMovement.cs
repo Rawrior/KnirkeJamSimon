@@ -6,7 +6,8 @@ public class PlayerMovement : MonoBehaviour
     public float speed;
     public GameObject GamemasterExecutor;
     public GameObject PickUpObject;
-    public int LayerMask;
+    public int LayerMask1;
+    public int LayerMask2;
     public float ThrowForce;
     public Vector2 throwingVector;
 
@@ -14,7 +15,8 @@ public class PlayerMovement : MonoBehaviour
     void Start ()
 	{
 	    GamemasterExecutor = GameObject.Find("GameMaster");
-	    LayerMask = 256;
+	    LayerMask1 = 256;
+	    LayerMask2 = 1024;
 	    throwingVector = new Vector2(0, 0);
     }
 	
@@ -40,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
 
         //Check if the use key is pressed. Space only, tho
         if (Input.GetKeyDown(KeyCode.Space))
-            UseFunction(LayerMask, ThrowForce);
+            UseFunction(LayerMask1, LayerMask2);
 
 	    if (PickUpObject != null)
 	        PickUpObject.transform.position = transform.position + Vector3.up * 1.8f;
@@ -52,18 +54,18 @@ public class PlayerMovement : MonoBehaviour
         transform.Translate(speed * Time.deltaTime, 0, 0);
     }
 
-    void UseFunction(int mask, float force)
+    void UseFunction(int mask1, int mask2)
     {
         //Check which direction to throw
         if (GamemasterExecutor.GetComponent<GamestateManager>().movedRight)
         {
             throwingVector = new Vector2(ThrowForce, ThrowForce*1.5f);
-            Debug.Log("ThrowVector: " + throwingVector);
+            //Debug.Log("ThrowVector: " + throwingVector);
         }
         else
         { 
             throwingVector = new Vector2(-ThrowForce, ThrowForce*1.5f);
-            Debug.Log("ThrowVector: " + throwingVector);
+            //Debug.Log("ThrowVector: " + throwingVector);
         }
 
         //Do the throwing
@@ -73,11 +75,14 @@ public class PlayerMovement : MonoBehaviour
             PickUpObject.GetComponent<Rigidbody2D>().velocity = throwingVector;
             PickUpObject = null;
         }
-        //do the picking up
-        else if (PickUpObject == null && Physics2D.OverlapCircle(transform.position, 2, mask) != null)
+        else if (Physics2D.OverlapCircle(transform.position, 2, mask2))
         {
-            PickUpObject = Physics2D.OverlapCircle(transform.position, 2, mask).gameObject;
-
+            //do more stuff, but with non-books (like beating up people to take their books)
+        }
+        //do the picking up
+        else if (PickUpObject == null && Physics2D.OverlapCircle(transform.position, 2, mask1) != null)
+        {
+            PickUpObject = Physics2D.OverlapCircle(transform.position, 2, mask1).gameObject;
         }
     }
 }
