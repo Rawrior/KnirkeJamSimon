@@ -6,7 +6,7 @@ public class FadeScript : MonoBehaviour
     public bool doFade = false;
     public float fadeAmount = 1.05f;
 
-    void Start()
+    void Awake()
     {
         if (GetComponent<MeshRenderer>().enabled == false)
             GetComponent<MeshRenderer>().enabled = true;
