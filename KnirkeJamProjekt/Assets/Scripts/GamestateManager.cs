@@ -7,4 +7,5 @@ public class GamestateManager : MonoBehaviour
     public bool movedLeft = false;
     public bool movedRight = false;
     public List<bool> booksPickedUp;
+    public bool seenHouse = false;
 }
