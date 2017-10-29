@@ -29,6 +29,7 @@ public class BookScript : MonoBehaviour
 
         if (GamestateManager.GetComponent<GamestateManager>().booksPickedUp.Count == 1)
             SceneManager.GetComponent<ScenemanagerScript>().spawnActTwo();
-        //else if (count == 2) etc...
+        else if (GamestateManager.GetComponent<GamestateManager>().booksPickedUp.Count == 2)
+            SceneManager.GetComponent<ScenemanagerScript>().spawnActThree();
     }
 }
