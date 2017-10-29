@@ -218,4 +218,26 @@ public class GamemasterExecutor : MonoBehaviour
         if (counters[5] == fifthEventStrings.Length - 1)
             doneEvents[4] = true;
     }
+
+    void sixthEvent()
+    {
+        string[] sixthEventStrings ={
+            "Just one more book for the day.",
+            "Go burn this book as well.",
+            ""};
+        if (counters[5] < sixthEventStrings.Length - 1)
+            timers[5] += Time.deltaTime;
+
+
+        if (timers[5] >= 2f && counters[5] < sixthEventStrings.Length - 1)
+        {
+            counters[5]++;
+            timers[5] = 0;
+        }
+
+        updateUIText(sixthEventStrings[counters[5]]);
+
+        if (counters[5] == sixthEventStrings.Length - 1)
+            doneEvents[4] = true;
+    }
 }
