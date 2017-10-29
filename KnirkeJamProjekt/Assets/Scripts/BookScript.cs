@@ -25,7 +25,7 @@ public class BookScript : MonoBehaviour
 
     void OnDestroy()
     {
-        GamestateManager.GetComponent<GamestateManager>().booksPickedUp[0] = true;
+        GamestateManager.GetComponent<GamestateManager>().booksPickedUp[GamestateManager.GetComponent<GamestateManager>().booksPickedUp.Count-1] = true;
 
         if (GamestateManager.GetComponent<GamestateManager>().booksPickedUp.Count == 1)
             SceneManager.GetComponent<ScenemanagerScript>().spawnActTwo();

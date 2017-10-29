@@ -54,7 +54,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         else if (Physics2D.OverlapCircle(transform.position, 2, mask2))
         {
-            //do more stuff, but with non-books (like beating up people to take their books)
+            GamemasterExecutor.GetComponent<GamestateManager>().hitCounter++;
         }
         //do the picking up
         else if (PickUpObject == null && Physics2D.OverlapCircle(transform.position, 2, mask1) != null)
