@@ -38,6 +38,6 @@ public class PlayerMovement : MonoBehaviour
     {
         //Do the boogie~
         //gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(speed, 0), ForceMode2D.Force);
-        transform.Translate(new Vector3(speed, 0, 0)*Time.deltaTime);
+        transform.Translate(new Vector3(speed, 0, 0)*Time.deltaTime, Space.World);
     }
 }

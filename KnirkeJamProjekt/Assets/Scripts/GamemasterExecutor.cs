@@ -8,9 +8,9 @@ public class GamemasterExecutor : MonoBehaviour
     public GameObject Canvas;
     public Text DisplayText;
     public GameObject playerObject;
-    private readonly int[] counters = {0, 0, 0, 0, 0, 0};
-    private readonly float[] timers = {0, 0, 0, 0, 0, 0};
-    private readonly bool[] doneEvents = {false, false, false, false, false};
+    private readonly int[] counters = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private readonly float[] timers = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private readonly bool[] doneEvents = {false, false, false, false, false, false, false, false};
 
     // Use this for initialization
     void Start ()
@@ -25,44 +25,59 @@ public class GamemasterExecutor : MonoBehaviour
 	// Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.Escape))
+            Application.Quit();
+
         //Fade on first input
         if (!GetComponent<GamestateManager>().fadeInDone)
             fadeHandler();
-
-        //Let the player do shit. Also introduce yourself
-        //FUCKING DISGUSTING CHAIN OF EVENTS, BLUUUUUURRRRGGGGHHHH
-        if (GetComponent<GamestateManager>().fadeInDone && !doneEvents[0])
-        {
-            if (playerObject != null && !playerObject.GetComponent<PlayerMovement>().enabled)
-                playerObject.GetComponent<PlayerMovement>().enabled = true;
-            firstEvent();
-        }
-        else if (GetComponent<GamestateManager>().booksPickedUp.Count == 1 && !doneEvents[1])
-        {
-            secondEvent();
-        }
-        else if (GetComponent<GamestateManager>().booksPickedUp.Count == 1 && !doneEvents[2])
-        {
-            thirdEvent();
-        }
-        else if (GetComponent<GamestateManager>().seenHouse && !doneEvents[3])
-        {
-            fourthEvent();
-        }
-        else if (GetComponent<GamestateManager>().booksPickedUp.Count == 2 && !doneEvents[4])
-        {
-            fifthEvent();
-        }
-        ////Just keep adding more as necessary
-        //else if (GetComponent<GamestateManager>().booksPickedUp.Count == 1)
-        //{
-
-        //}
 
         if (playerObject == null)
         {
             loseEvent();
         }
+        else
+        {
+            //Let the player do shit. Also introduce yourself
+            //FUCKING DISGUSTING CHAIN OF EVENTS, BLUUUUUURRRRGGGGHHHH
+            if (!doneEvents[0] && GetComponent<GamestateManager>().fadeInDone)
+            {
+                if (playerObject != null && !playerObject.GetComponent<PlayerMovement>().enabled)
+                    playerObject.GetComponent<PlayerMovement>().enabled = true;
+                firstEvent();
+            }
+            else if (!doneEvents[1] && GetComponent<GamestateManager>().booksPickedUp.Count == 1)
+            {
+                secondEvent();
+            }
+            else if (!doneEvents[2] && GetComponent<GamestateManager>().booksPickedUp.Count == 1)
+            {
+                thirdEvent();
+            }
+            else if (!doneEvents[3] && GetComponent<GamestateManager>().seenHouse)
+            {
+                fourthEvent();
+            }
+            else if (!doneEvents[4] && GetComponent<GamestateManager>().booksPickedUp.Count == 2)
+            {
+                fifthEvent();
+            }
+            else if (!doneEvents[5] && GetComponent<GamestateManager>().booksPickedUp.Count == 2)
+            {
+                sixthEvent();
+            }
+            else if (!doneEvents[6] && GetComponent<GamestateManager>().seenAdversary)
+            {
+                seventhEvent();
+            }
+            else if (!doneEvents[7] && GetComponent<GamestateManager>().booksPickedUp[2])
+            {
+                eightthEvent();
+            }
+        }
+
+        if (doneEvents[7] && Input.anyKey)
+            Application.Quit();
     }
 
     void updateUIText(string text)
@@ -87,8 +102,7 @@ public class GamemasterExecutor : MonoBehaviour
             "Ah well.",
             "You can't escape your sins."};
 
-        if (counters[0] < loseEventStrings.Length - 1)
-            timers[0] += Time.deltaTime;
+        timers[0] += Time.deltaTime;
 
         if (timers[0] >= 2f && counters[0] < loseEventStrings.Length - 1)
         {
@@ -97,6 +111,9 @@ public class GamemasterExecutor : MonoBehaviour
         }
 
         updateUIText(loseEventStrings[counters[0]]);
+
+        if (counters[0] >= loseEventStrings.Length - 1 && Input.anyKey && timers[0] >= 2f)
+            Application.Quit();
     }
 
     //Just copy this for however many you gotta dooooo
@@ -215,7 +232,7 @@ public class GamemasterExecutor : MonoBehaviour
 
         updateUIText(fifthEventStrings[counters[5]]);
 
-        if (counters[5] == fifthEventStrings.Length - 1)
+        if (GetComponent<GamestateManager>().booksPickedUp[1])
             doneEvents[4] = true;
     }
 
@@ -223,21 +240,87 @@ public class GamemasterExecutor : MonoBehaviour
     {
         string[] sixthEventStrings ={
             "Just one more book for the day.",
-            "Go burn this book as well.",
-            ""};
-        if (counters[5] < sixthEventStrings.Length - 1)
-            timers[5] += Time.deltaTime;
+            "A criminal has it.",
+            "They will try to defend the book.",
+            "Do not be dissuaded.",
+            "You will simply need to convince them to hand it over."};
+
+        if (counters[6] < sixthEventStrings.Length - 1)
+            timers[6] += Time.deltaTime;
 
 
-        if (timers[5] >= 2f && counters[5] < sixthEventStrings.Length - 1)
+        if (timers[6] >= 2f && counters[6] < sixthEventStrings.Length - 1)
         {
-            counters[5]++;
-            timers[5] = 0;
+            counters[6]++;
+            timers[6] = 0;
         }
 
-        updateUIText(sixthEventStrings[counters[5]]);
+        updateUIText(sixthEventStrings[counters[6]]);
 
-        if (counters[5] == sixthEventStrings.Length - 1)
-            doneEvents[4] = true;
+        if (counters[6] == sixthEventStrings.Length - 1)
+            doneEvents[5] = true;
+    }
+
+    void seventhEvent()
+    {
+        bool firstDone = false;
+        string[] seventhEventFirstStrings ={
+            "There.",
+            "Go on. Take their book.",
+            "Do it. Hit them if you must."};
+
+        string[] seventEventSecondStrings = {
+            "Hit them.",
+            "Hit them!",
+            "HIT THEM",
+            "Well done. Go and burn the book."
+        };
+
+        timers[7] += Time.deltaTime;
+
+        if (timers[7] >= 2f && counters[7] < seventhEventFirstStrings.Length - 1)
+        {
+            counters[7]++;
+            timers[7] = 0;
+        }
+
+        updateUIText(seventhEventFirstStrings[counters[7]]);
+
+        if (counters[7] == seventhEventFirstStrings.Length - 1 && timers[7] >= 2f)
+            firstDone = true;
+
+        if (firstDone /*&& GetComponent<GamestateManager>().hitCounter != 0*/)
+        {
+            updateUIText(seventEventSecondStrings[GetComponent<GamestateManager>().hitCounter]);
+
+            if (GetComponent<GamestateManager>().hitCounter == 3)
+                doneEvents[6] = true;
+        }
+    }
+
+    void eightthEvent()
+    {
+        bool firstDone = false;
+        string[] eightthEventStrings ={
+            "Well done.",
+            "We are done for now",
+            "Did you enjoy it?",
+            "You could have ended it at any time, you know.",
+            "At least then I'd know you were weak.",
+            "Goodbye now. Think on what you've done."};
+
+       timers[8] += Time.deltaTime;
+
+
+        if (timers[8] >= 2f && counters[8] < eightthEventStrings.Length - 1)
+        {
+            counters[8]++;
+            timers[8] = 0;
+        }
+
+        updateUIText(eightthEventStrings[counters[8]]);
+
+        if (counters[8] == eightthEventStrings.Length - 1 && timers[8] >= 2f)
+            doneEvents[7] = true;
     }
 }
